@@ -1,56 +1,53 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
-import { Course } from './courses.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Course } from './entities/courses.entity';
 
 @Injectable()
 export class CoursesService {
+  private courses: Course[] = [
+    {
+      id: 1,
+      name: 'NestJs',
+      description: 'Curso sobre fundamentos do framework NestJs',
+      tags: ['node.js', 'nestjs', 'javascript', 'typescript'],
+    },
+  ];
 
-    private courses: Course[] = [
-        { 
-            id: 1, 
-            name: "NestJs", 
-            description: "Curso sobre fundamentos do framework NestJs",
-            tags: ['node.js', 'nestjs', 'javascript', 'typescript']
-        }
-    ];
+  findAll() {
+    return this.courses;
+  }
 
-    findAll() {
-        return this.courses;
+  findOne(id: number) {
+    const course = this.courses.find((course) => course.id === id);
+
+    if (!course) {
+      throw new NotFoundException(`Course ID ${id} not found`);
     }
 
-    findOne(id: number) {
-        const course = this.courses.find(course => course.id === id);
+    return course;
+  }
 
-        if(!course) {
-            throw new NotFoundException(`Course ID ${id} not found`);
-        }
+  create(createCourseDTO: any) {
+    this.courses.push(createCourseDTO);
+    return createCourseDTO;
+  }
 
-        return course;
+  update(id: number, updateCourseDTO: any) {
+    const existingCourse = this.findOne(id);
+
+    if (existingCourse as any) {
+      const index = this.courses.findIndex((course) => course.id === id);
+      this.courses[index] = {
+        id,
+        ...updateCourseDTO,
+      };
     }
+  }
 
-    create(createCourseDTO: any) {
-        this.courses.push(createCourseDTO);
-        return createCourseDTO;
+  remove(id: number) {
+    const index = this.courses.findIndex((course) => course.id === id);
+
+    if (index >= 0) {
+      this.courses.splice(index, 1);
     }
-
-    update(id: number, updateCourseDTO: any) {
-        const existingCourse = this.findOne(id);
-
-        if(existingCourse as any) {
-            const index = this.courses.findIndex(course => course.id === id);
-            this.courses[index] = {
-                id,
-                ...updateCourseDTO
-            }
-
-        }
-    }
-
-    remove(id: number) {
-        const index = this.courses.findIndex(course => course.id === id);
-
-        if(index >= 0) {
-            this.courses.splice(index, 1);
-        }
-    }
-    
+  }
 }
