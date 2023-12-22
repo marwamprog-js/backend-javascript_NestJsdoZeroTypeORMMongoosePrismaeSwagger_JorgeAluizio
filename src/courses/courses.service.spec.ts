@@ -82,4 +82,16 @@ describe('CoursesService', () => {
     expect(mockCourseRepository.find).toHaveBeenCalled(); //Espero que o metodo save tenha sido chamado
     expect(expectOutputCourses).toStrictEqual(courses); //Espero que o newCourse seja exatamente igual a expectOutputCourses
   });
+
+  it('should gets a course by id', async () => {
+    //@ts-expect-error defined part of methods
+    service['courseRepository'] = mockCourseRepository;
+    //@ts-expect-error defined part of methods
+    service['tagRepository'] = mockTagRepository;
+
+    const course = await service.findOne(id);
+
+    expect(mockCourseRepository.findOne).toHaveBeenCalled(); //Espero que o metodo save tenha sido chamado
+    expect(expectOutputCourses).toStrictEqual(course); //Espero que o newCourse seja exatamente igual a expectOutputCourses
+  });
 });
